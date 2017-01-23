@@ -22,12 +22,14 @@ public:
     Triangle getTriangle(int);
     int getNumberTriangle(int);
     Sommet getSommet(int);
+    void setSommet(int, int);
     int getNumberSommet(int);
     int getIndexTriangle(int);
     int getIndexSommet(int);
     int indexOtherSommet(int, int);
     void setTriangle(int, int);
     int getIndex();
+    void setIndex(int);
 };
 
 #endif // TRIANGLE_H

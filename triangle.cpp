@@ -6,7 +6,7 @@ Triangle::Triangle(Maillage* m, int a, int b, int c)
     sommets[1] = b;
     sommets[2] = c;
     maillage = m;
-    index = m->sizeTriangles();
+    index = -1;
 
     triangles[0] = -1;
     triangles[1] = -1;
@@ -19,6 +19,7 @@ Triangle::Triangle()
     sommets[1] = 0;
     sommets[2] = 0;
     maillage = NULL;
+    index = -1;
 
     triangles[0] = 0;
     triangles[1] = 0;
@@ -31,7 +32,7 @@ Triangle::Triangle(Maillage* m, int a, int b, int c, int d, int e, int f)
     sommets[1] = b;
     sommets[2] = c;
     maillage = m;
-    index = m->sizeTriangles();
+    index = -1;
 
     triangles[0] = d;
     triangles[1] = e;
@@ -56,6 +57,12 @@ void Triangle::setTriangle(int i, int t)
     triangles[i] = t;
 }
 
+void Triangle::setSommet(int i, int s)
+{
+    i = i%3;
+    sommets[i] = s;
+}
+
 int Triangle::indexOtherSommet(int a, int b)
 {
     for(int i = 0; i<3; i++)
@@ -65,6 +72,8 @@ int Triangle::indexOtherSommet(int a, int b)
             return i;
         }
     }
+
+    return -1;
 }
 
 int Triangle::getNumberSommet(int i)
@@ -82,6 +91,11 @@ int Triangle::getNumberTriangle(int i)
 int Triangle::getIndex()
 {
     return index;
+}
+
+void Triangle::setIndex(int a)
+{
+    index = a;
 }
 
 int Triangle::getIndexTriangle(int t)

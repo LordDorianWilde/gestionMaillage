@@ -12,6 +12,7 @@ class Sommet
     private:
         Maillage* maillage;
         int triangle;
+        int index;
         float coordonnees[3];
     public:
         Sommet();
@@ -19,6 +20,8 @@ class Sommet
         Sommet(Maillage*, float, float, float, int);
         float getCoordonne(int);
         void setTriangle(int);
+        int getIndex();
+        void setIndex(int);
         int getTriangle();
 };
 

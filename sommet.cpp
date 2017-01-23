@@ -6,6 +6,7 @@ Sommet::Sommet(Maillage* m, float a, float b, float c)
     coordonnees[1] = b;
     coordonnees[2] = c;
     maillage = m;
+    index = -1;
     triangle = -1;
 }
 Sommet::Sommet()
@@ -14,6 +15,7 @@ Sommet::Sommet()
     coordonnees[1] = 0;
     coordonnees[2] = 0;
     maillage = NULL;
+    index = -1;
     triangle = -1;
 }
 
@@ -22,6 +24,7 @@ Sommet::Sommet(Maillage* m, float a, float b, float c, int t)
     coordonnees[0] = a;
     coordonnees[1] = b;
     coordonnees[2] = c;
+    index = -1;
     maillage = m;
     triangle = t;
 }
@@ -40,4 +43,14 @@ float Sommet::getCoordonne(int i)
 int Sommet::getTriangle()
 {
     return triangle;
+}
+
+int Sommet::getIndex()
+{
+    return index;
+}
+
+void Sommet::setIndex(int a)
+{
+    index = a;
 }
