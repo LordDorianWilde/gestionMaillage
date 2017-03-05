@@ -41,22 +41,50 @@ void Maillage::addSommetMaillage(Sommet s)
     addSommet(s);
     s = sommets.last();
 
-    int i = 0 ;
-    while(i != -1 && i != sommetInTriangle(s, i))
+    if(sommets.size() > 4)
     {
-        i = sommetInTriangle(s, i);
-    }
+        int i = 0 ;
+        while(i != -1 && i != sommetInTriangle(s, i))
+        {
+            i = sommetInTriangle(s, i);
+        }
 
-    if(triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0)
-    {
-        Triangle t = triangles[i];
-        addSommetInTriangle(s, t);
+        if(triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0)
+        {
+            Triangle t = triangles[i];
+            addSommetInTriangle(s, t);
+        }
+        else
+        {
+            Triangle t = triangles[i];
+            addSommetInTriangle(s, t);
+            addSommetExterieur(s.index);
+        }
     }
-    else
+    else if(sommets.size() == 4)
     {
-        Triangle t = triangles[i];
-        addSommetInTriangle(s, t);
-        addSommetExterieur(s.index);
+        if(isDirect(sommets[1],sommets[2],sommets[3]))
+        {
+            Triangle t = Triangle(1,2,3,1,2,3);
+            Triangle t1 = Triangle(0,2,1,0,2,1);
+            Triangle t2 = Triangle(0,3,2,0,3,2);
+            Triangle t3 = Triangle(0,1,3,0,1,3);
+            addTriangle(t);
+            addTriangle(t1);
+            addTriangle(t2);
+            addTriangle(t3);
+        }
+        else
+        {
+            Triangle t = Triangle(1,3,2,2,1,3);
+            Triangle t1 = Triangle(0,1,2,0,2,3);
+            Triangle t2 = Triangle(0,2,3,0,3,1);
+            Triangle t3 = Triangle(0,3,1,0,1,2);
+            addTriangle(t);
+            addTriangle(t1);
+            addTriangle(t2);
+            addTriangle(t3);
+        }
     }
 }
 
@@ -87,7 +115,7 @@ int Maillage::sommetInTriangle(Sommet s, int i)
         }
         else
         {
-            return t.triangles[0];
+            return t.triangles[1];
         }
     }
 }
