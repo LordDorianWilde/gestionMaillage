@@ -6,6 +6,8 @@ GLDisplay::GLDisplay(QWidget *parent) :
     mousePressed = false;
     translateX = 0.0;
     translateY = 0.0;
+    generator = default_random_engine();
+
 }
 
 void GLDisplay::initializeGL()
@@ -49,12 +51,12 @@ void GLDisplay::optimize()
 
 void GLDisplay::randomPoints(float xmin, float xmax, float ymin, float ymax, int number)
 {
-    std::default_random_engine generator;
-    std::uniform_real_distribution<float> distributionX(xmin, xmax);
-    std::uniform_real_distribution<float> distributionY(ymin, ymax);
+
 
     for(int i = 0; i<number; i++)
     {
+        std::uniform_real_distribution<float> distributionX(xmin, xmax);
+        std::uniform_real_distribution<float> distributionY(ymin, ymax);
         float x = distributionX(generator);
         float y = distributionY(generator);
 

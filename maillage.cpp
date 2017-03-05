@@ -65,10 +65,10 @@ void Maillage::addSommetMaillage(Sommet s)
     {
         if(isDirect(sommets[1],sommets[2],sommets[3]))
         {
-            Triangle t = Triangle(1,2,3,1,2,3);
-            Triangle t1 = Triangle(0,2,1,0,2,1);
-            Triangle t2 = Triangle(0,3,2,0,3,2);
-            Triangle t3 = Triangle(0,1,3,0,1,3);
+            Triangle t = Triangle(1,2,3,2,3,1);
+            Triangle t1 = Triangle(0,2,1,0,3,2);
+            Triangle t2 = Triangle(0,3,2,0,1,3);
+            Triangle t3 = Triangle(0,1,3,0,2,1);
             addTriangle(t);
             addTriangle(t1);
             addTriangle(t2);
