@@ -11,10 +11,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->buttonPoint, &QAbstractButton::clicked, this, &addPoint);
     connect(ui->buttonClear, &QAbstractButton::clicked, this, &clear);
     connect(ui->buttonOptimize, &QAbstractButton::clicked, this, &optimize);
+    connect(ui->buttonAddPoints, &QAbstractButton::clicked, this, &addRandomPoints);
     QObject::connect(this, SIGNAL(parseText(QString)), ui->widget, SLOT(parse(QString)));
     QObject::connect(this, SIGNAL(newPoint(float, float)), ui->widget, SLOT(addPoint(float,float)));
     QObject::connect(this, SIGNAL(signalclear()), ui->widget, SLOT(clear()));
     QObject::connect(this, SIGNAL(signaloptimize()), ui->widget, SLOT(optimize()));
+    QObject::connect(this, SIGNAL(randomPoints(float,float,float,float,int)), ui->widget, SLOT(randomPoints(float,float,float,float,int)));
 }
 
 MainWindow::~MainWindow()
@@ -53,4 +55,15 @@ void MainWindow::clear()
 void MainWindow::optimize()
 {
     emit signaloptimize();
+}
+
+void MainWindow::addRandomPoints()
+{
+    float xmin = stof(ui->Xmin->text().toStdString());
+    float xmax = stof(ui->Xmax->text().toStdString());
+    float ymin = stof(ui->Ymin->text().toStdString());
+    float ymax = stof(ui->Ymax->text().toStdString());
+
+    int numberPoints = stoi(ui->numberPoint->text().toStdString());
+    emit randomPoints(xmin, xmax, ymin, ymax, numberPoints);
 }

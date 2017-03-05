@@ -20,6 +20,7 @@ public:
     void addPoint();
     void clear();
     void optimize();
+    void addRandomPoints();
     ~MainWindow();
 
 signals:
@@ -27,6 +28,7 @@ signals:
     void newPoint(float, float);
     void signalclear();
     void signaloptimize();
+    void randomPoints(float, float, float, float, int);
     
 private:
     Ui::MainWindow *ui;

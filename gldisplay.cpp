@@ -47,6 +47,21 @@ void GLDisplay::optimize()
     gasket.optimize();
 }
 
+void GLDisplay::randomPoints(float xmin, float xmax, float ymin, float ymax, int number)
+{
+    std::default_random_engine generator;
+    std::uniform_real_distribution<float> distributionX(xmin, xmax);
+    std::uniform_real_distribution<float> distributionY(ymin, ymax);
+
+    for(int i = 0; i<number; i++)
+    {
+        float x = distributionX(generator);
+        float y = distributionY(generator);
+
+        addPoint(x, y);
+    }
+}
+
 void GLDisplay::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h);

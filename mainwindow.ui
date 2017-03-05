@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>961</width>
-    <height>557</height>
+    <width>1047</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>430</x>
       <y>10</y>
-      <width>521</width>
-      <height>481</height>
+      <width>611</width>
+      <height>521</height>
      </rect>
     </property>
    </widget>
@@ -28,7 +28,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>40</y>
       <width>411</width>
       <height>81</height>
      </rect>
@@ -77,7 +77,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>120</y>
+      <y>150</y>
       <width>401</width>
       <height>101</height>
      </rect>
@@ -149,7 +149,7 @@
     <property name="geometry">
      <rect>
       <x>300</x>
-      <y>250</y>
+      <y>440</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -162,7 +162,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>250</y>
+      <y>440</y>
       <width>121</width>
       <height>23</height>
      </rect>
@@ -171,13 +171,167 @@
      <string>Optimize</string>
     </property>
    </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>270</y>
+      <width>401</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Add Random Point</string>
+    </property>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Area :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>20</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Xmin :</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Xmin">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>20</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>20</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Xmax :</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Xmax">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>20</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>50</y>
+       <width>47</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ymin :</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Ymin">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>50</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>230</x>
+       <y>50</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ymax :</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="Ymax">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>50</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Number point :</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="numberPoint">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>100</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="buttonAddPoints">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>90</y>
+       <width>111</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add points</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>961</width>
+     <width>1047</width>
      <height>21</height>
     </rect>
    </property>

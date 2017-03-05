@@ -4,6 +4,7 @@
 #include <QGLWidget>
 #include <gasket.h>
 #include <QMouseEvent>
+#include <random>
 
 class GLDisplay : public QGLWidget
 {
@@ -36,6 +37,7 @@ public slots:
     void addPoint(float x, float y);
     void clear();
     void optimize();
+    void randomPoints(float, float, float, float, int);
     
 };
 
