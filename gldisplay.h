@@ -29,6 +29,7 @@ private:
     QPoint lastPos;
     float translateX;
     float translateY;
+    std::default_random_engine generator;
     
 signals:
     
