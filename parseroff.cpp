@@ -29,8 +29,24 @@ Maillage ParserOff::parseFichier(QString fileName)
         }
         if(coord.size() == 4)
         {
-            processTriangle(coord[1].toInt(), coord[2].toInt(), coord[3].toInt());
+            processTriangle(coord[1].toInt() + 1, coord[2].toInt() + 1, coord[3].toInt() + 1);
         }
+    }
+
+    map< QPair<int, int>, int>::iterator it(areteTriangle.begin());
+    while(areteTriangle.size() > 0)
+    {
+        QPair<int, int> arete = (*it).first;
+        if(arete.second != 0 && arete.first != 0)
+        {
+            processTriangle(0, arete.second, arete.first);
+            it = areteTriangle.begin();
+        }
+        else
+        {
+            it++;
+        }
+
     }
 
     return m;
@@ -38,26 +54,26 @@ Maillage ParserOff::parseFichier(QString fileName)
 
 void ParserOff::processSommet(float a, float b, float c)
 {
-    Sommet s = Sommet(&m, a, b, c);
+    Sommet s = Sommet(a, b, c);
     m.addSommet(s);
 }
 
 void ParserOff::processTriangle(int a, int b, int c)
 {
-    Triangle t = Triangle(&m, a, b, c);
+    Triangle t = Triangle(a, b, c);
     m.addTriangle(t);
 
-    if(m.getSommet(a)->getTriangle() == -1)
+    if(m.getSommet(a)->triangle == -1)
     {
-        m.getSommet(a)->setTriangle(m.sizeTriangles()-1);
+        m.getSommet(a)->triangle = m.sizeTriangles()-1;
     }
-    if(m.getSommet(b)->getTriangle() == -1)
+    if(m.getSommet(b)->triangle == -1)
     {
-        m.getSommet(b)->setTriangle(m.sizeTriangles()-1);
+        m.getSommet(b)->triangle = m.sizeTriangles()-1;
     }
-    if(m.getSommet(c)->getTriangle() == -1)
+    if(m.getSommet(c)->triangle == -1)
     {
-        m.getSommet(c)->setTriangle(m.sizeTriangles()-1);
+        m.getSommet(c)->triangle = m.sizeTriangles()-1;
     }
 
     linkTriangles(a, b);
@@ -73,8 +89,8 @@ void ParserOff::linkTriangles(int a, int b)
     {
         int indexT2 = areteTriangle[QPair<int,int>(b, a)];
         Triangle* t2 = m.getTriangle(indexT2);
-        t->setTriangle(t->indexOtherSommet(a, b), indexT2);
-        t2->setTriangle(t2->indexOtherSommet(a, b), t->getIndex());
+        t->triangles[t->indexOtherSommet(a, b)] = indexT2;
+        t2->triangles[t2->indexOtherSommet(a, b)] = t->index;
         areteTriangle.erase(QPair<int,int>(b, a));
     }
     else

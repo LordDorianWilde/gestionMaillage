@@ -1,17 +1,11 @@
-#include <iostream>
-#include <QDebug>
-#include "parseroff.h"
+#include "mainwindow.h"
+#include <QApplication>
 
-using namespace std;
-
-int main()
+int main(int argc, char *argv[])
 {
-    ParserOff p = ParserOff();
-    Maillage m = p.parseFichier("queen.off");
-
-    Sommet s = Sommet(&m, 0.75, 0.75, 0);
-    m.addSommetMaillage(s);
-
-    return 0;
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    
+    return a.exec();
 }
-

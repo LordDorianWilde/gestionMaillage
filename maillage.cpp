@@ -4,9 +4,12 @@ Maillage::Maillage()
 {
     sommets = QVector<Sommet>();
     triangles = QVector<Triangle>();
+
+    Sommet infinie(0, 0, 0);
+    addSommet(infinie);
 }
 
-Sommet* Maillage::getSommet(int i)
+Sommet *Maillage::getSommet(int i)
 {
     return &sommets[i];
 }
@@ -19,13 +22,13 @@ Triangle* Maillage::getTriangle(int i)
 void Maillage::addSommet(Sommet s)
 {
     sommets.push_back(s);
-    sommets.last().setIndex(sommets.length() - 1);
+    sommets.last().index = sommets.length() - 1;
 }
 
 void Maillage::addTriangle(Triangle t)
 {
     triangles.push_back(t);
-    triangles.last().setIndex(triangles.length() - 1);
+    triangles.last().index = triangles.length() - 1;
 }
 
 int Maillage::sizeTriangles()
@@ -39,44 +42,65 @@ void Maillage::addSommetMaillage(Sommet s)
     s = sommets.last();
 
     int i = 0 ;
-    while(i< triangles.length() && !sommetInTriangle(s, triangles[i]))
+    while(i != -1 && i != sommetInTriangle(s, i))
     {
-        i++;
+        i = sommetInTriangle(s, i);
     }
 
-    if(i < triangles.length())
+    if(triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0)
     {
         Triangle t = triangles[i];
         addSommetInTriangle(s, t);
     }
     else
     {
-        addSommetExterieur(s);
+        Triangle t = triangles[i];
+        addSommetInTriangle(s, t);
+        addSommetExterieur(s.index);
     }
 }
 
-bool Maillage::sommetInTriangle(Sommet s, Triangle t)
+int Maillage::sommetInTriangle(Sommet s, int i)
 {
-    Sommet a = t.getSommet(0);
-    Sommet b = t.getSommet(1);
-    Sommet c = t.getSommet(2);
+    Triangle t = triangles[i];
+    Sommet a = sommets[t.sommets[0]];
+    Sommet b = sommets[t.sommets[1]];
+    Sommet c = sommets[t.sommets[2]];
+
+    bool g = isDirect(s, a, b);
+    bool f = isDirect(s, b, c);
+    bool h = isDirect(s, c, a);
 
     if(isDirect(s, a, b) && isDirect(s, b, c) && isDirect(s, c, a))
     {
-        return true;
+        return i;
     }
     else
     {
-        return false;
+        if(!isDirect(s, a, b))
+        {
+            return t.triangles[2];
+        }
+        else if(!isDirect(s, b, c))
+        {
+            return t.triangles[0];
+        }
+        else
+        {
+            return t.triangles[0];
+        }
     }
 }
 
 bool Maillage::isDirect(Sommet a, Sommet b, Sommet c)
 {
-    float xab = b.getCoordonne(0) - a.getCoordonne(0);
-    float xac = c.getCoordonne(0) - a.getCoordonne(0);
-    float yab = b.getCoordonne(1) - a.getCoordonne(1);
-    float yac = c.getCoordonne(1) - a.getCoordonne(1);
+    float xab = b.coordonnees[0] - a.coordonnees[0];
+    float xac = c.coordonnees[0] - a.coordonnees[0];
+    float yab = b.coordonnees[1] - a.coordonnees[1];
+    float yac = c.coordonnees[1] - a.coordonnees[1];
+
+    if(a.index == 0 || b.index == 0 || c.index == 0)
+        return true;
 
     float z = xab*yac - yab*xac;
     return (z > 0.0);
@@ -84,64 +108,147 @@ bool Maillage::isDirect(Sommet a, Sommet b, Sommet c)
 
 void Maillage::addSommetInTriangle(Sommet s, Triangle t)
 {
-    Sommet a = t.getSommet(0);
-    Sommet b = t.getSommet(1);
-    Sommet c = t.getSommet(2);
+    Sommet a = sommets[t.sommets[0]];
+    Sommet b = sommets[t.sommets[1]];
+    Sommet c = sommets[t.sommets[2]];
 
-    Triangle t1 = Triangle(this, s.getIndex(), c.getIndex(), a.getIndex());
-    Triangle t2 = Triangle(this, s.getIndex(), a.getIndex(), b.getIndex());
+    Triangle t1 = Triangle(s.index, c.index, a.index);
+    Triangle t2 = Triangle(s.index, a.index, b.index);
 
 
-    this->addTriangle(t1);
-    this->addTriangle(t2);
-    Triangle* pt1 = getTriangle(triangles.length()-2);
-    Triangle* pt2 = getTriangle(triangles.length()-1);
-    Triangle* pt = getTriangle(t.getIndex());
-    pt->setSommet(0, s.getIndex());
+    addTriangle(t1);
+    int indexMaillageT1 = triangles.length()-1;
+    addTriangle(t2);
+    int indexMaillageT2 = triangles.length()-1;
+    int indexMaillageT = t.index;
+    triangles[indexMaillageT].sommets[0] = s.index;
 
-    int Indexb = -1;
-    int Indexc = -1;
-    Triangle* tb;
-    Triangle* tc;
+    int tb;
+    int tc;
 
-    if(t.getNumberTriangle(1) != -1)
+    if(t.triangles[1] != -1)
     {
-        tb = getTriangle(pt->getTriangle(1).getIndex());
-        Indexb = tb->getIndex();
-        int tbi = tb->getIndexTriangle(pt->getIndex());
-        tb->setTriangle(tbi, pt1->getIndex());
-        pt1->setTriangle(0, Indexb);
+        tb = triangles[indexMaillageT].triangles[1];
+        int tbi = triangles[tb].triangles.indexOf(indexMaillageT);
+        triangles[tb].triangles[tbi] = indexMaillageT1;
+        triangles[indexMaillageT1].triangles[0] = tb;
     }
     else
     {
-        pt1->setTriangle(0, -1);
+        triangles[indexMaillageT1].triangles[0] = -1;
     }
 
-    if(t.getNumberTriangle(2) != -1)
+    if(t.triangles[2] != -1)
     {
-        tc = getTriangle(pt->getTriangle(2).getIndex());
-        Indexc = tc->getIndex();
-        int tci = tc->getIndexTriangle(pt->getIndex());
-        tc->setTriangle(tci, pt2->getIndex());
-        pt2->setTriangle(0, Indexc);
+        tc = triangles[indexMaillageT].triangles[2];
+        int tci = triangles[tc].triangles.indexOf(indexMaillageT);
+        triangles[tc].triangles[tci] = indexMaillageT2;
+        triangles[indexMaillageT2].triangles[0] = tc;
     }
     else
     {
-        pt2->setTriangle(0, -1);
+        triangles[indexMaillageT2].triangles[0] = -1;
     }
 
 
-    pt1->setTriangle(1, pt2->getIndex());
-    pt1->setTriangle(2, t.getIndex());
+    triangles[indexMaillageT1].triangles[1] = indexMaillageT2;
+    triangles[indexMaillageT1].triangles[2] = indexMaillageT;
 
-    pt2->setTriangle(1, t.getIndex());
-    pt2->setTriangle(2, pt1->getIndex());
+    triangles[indexMaillageT2].triangles[1] = indexMaillageT;
+    triangles[indexMaillageT2].triangles[2] = indexMaillageT1;
 
-    pt->setTriangle(1, pt1->getIndex());
-    pt->setTriangle(2, pt2->getIndex());
+    triangles[indexMaillageT].triangles[1] = indexMaillageT1;
+    triangles[indexMaillageT].triangles[2] = indexMaillageT2;
+
+    sommets[s.index].triangle = indexMaillageT;
 }
 
-void Maillage::addSommetExterieur(Sommet s)
+void Maillage::addSommetExterieur(int s)
 {
+    Triangle t = triangles[sommets[s].triangle];
 
+    while(t.sommets[0] == 0 || t.sommets[1] ==0 || t.sommets[2] == 0)
+    {
+        t = triangles[nextTriangleRotating(s, t.index, 1)];
+    }
+
+    int t1 = nextTriangleRotating(s, t.index, 1);
+    int t2 = nextTriangleRotating(0, t1, 1);
+
+    while(t2 == sommetInTriangle(sommets[s], t2))
+    {
+        flipArete(t1, s, t2);
+
+        Triangle aux = triangles[t1];
+        if(aux.sommets[0] == 0 || aux.sommets[1] == 0 || aux.sommets[2] == 0)
+        {
+            t2 = nextTriangleRotating(0, t1, 1);
+        }
+        else
+        {
+            t1 = t2;
+            t2 = nextTriangleRotating(0, t1, 1);
+        }
+    }
+
+    t1 = nextTriangleRotating(s, t.index, -1);
+    t2 = nextTriangleRotating(0, t1, -1);
+
+    while(t2 == sommetInTriangle(sommets[s], t2))
+    {
+        flipArete(t1, s, t2);
+
+        Triangle aux = triangles[t1];
+        if(aux.sommets[0] == 0 || aux.sommets[1] == 0 || aux.sommets[2] == 0)
+        {
+            t2 = nextTriangleRotating(0, t1, -1);
+        }
+        else
+        {
+            t1 = t2;
+            t2 = nextTriangleRotating(0, t1, -1);
+        }
+    }
+}
+
+void Maillage::flipArete(int indexT, int indexS, int indexU)
+{
+    int sa = triangles[indexT].sommets[(triangles[indexT].sommets.indexOf(indexS)+1)%3];
+    int sb = triangles[indexT].sommets[(triangles[indexT].sommets.indexOf(indexS)+2)%3];
+    int st = triangles[indexT].sommets[triangles[indexT].indexOtherSommet(sa, sb)];
+    int su = triangles[indexU].sommets[triangles[indexU].indexOtherSommet(sa, sb)];
+
+    int t_tb = triangles[indexT].triangles[triangles[indexT].sommets.indexOf(sa)];
+    int t_ta = triangles[indexT].triangles[triangles[indexT].sommets.indexOf(sb)];
+    int t_ub = triangles[indexU].triangles[triangles[indexU].sommets.indexOf(sa)];
+    int t_ua = triangles[indexU].triangles[triangles[indexU].sommets.indexOf(sb)];
+
+    triangles[indexT].sommets[0] = sb;
+    triangles[indexT].sommets[1] = st;
+    triangles[indexT].sommets[2] = su;
+
+    triangles[indexT].triangles[0] = indexU;
+    triangles[indexT].triangles[1] = t_ub;
+    triangles[indexT].triangles[2] = t_tb;
+
+    if(t_ub >= 0)
+        triangles[t_ub].triangles[triangles[t_ub].triangles.indexOf(indexU)] = indexT;
+
+    triangles[indexU].sommets[0] = sa;
+    triangles[indexU].sommets[1] = su;
+    triangles[indexU].sommets[2] = st;
+
+    triangles[indexU].triangles[0] = indexT;
+    triangles[indexU].triangles[1] = t_ta;
+    triangles[indexU].triangles[2] = t_ua;
+
+    if(t_ta >= 0)
+        triangles[t_ta].triangles[triangles[t_ta].triangles.indexOf(indexT)] = indexU;
+}
+
+int Maillage::nextTriangleRotating(int sommet, int triangle, int sens)
+{
+    int indexSommet = ((triangles[triangle].sommets.indexOf(sommet) + sens) + 3)%3;
+    int reponse = triangles[triangle].triangles[indexSommet];
+    return reponse;
 }

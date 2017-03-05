@@ -20,10 +20,13 @@ class Maillage
         void addTriangle(Triangle);
         int sizeTriangles();
         void addSommetMaillage(Sommet);
-        bool sommetInTriangle(Sommet, Triangle);
+        int sommetInTriangle(Sommet, int i);
         bool isDirect(Sommet, Sommet, Sommet);
         void addSommetInTriangle(Sommet, Triangle);
-        void addSommetExterieur(Sommet);
+        void addSommetExterieur(int);
+        void flipArete(int indexT, int indexS, int indexU);
+        void flipInfini(int sommet);
+        int nextTriangleRotating(int sommet, int triangle, int sens);
 };
 
 #endif // MAILLAGE_H
