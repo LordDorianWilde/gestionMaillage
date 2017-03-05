@@ -37,6 +37,16 @@ void GLDisplay::addPoint(float x, float y)
     gasket.addPoint(x, y);
 }
 
+void GLDisplay::clear()
+{
+    gasket.clear();
+}
+
+void GLDisplay::optimize()
+{
+    gasket.optimize();
+}
+
 void GLDisplay::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h);

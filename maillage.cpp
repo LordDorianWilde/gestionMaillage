@@ -280,3 +280,66 @@ int Maillage::nextTriangleRotating(int sommet, int triangle, int sens)
     int reponse = triangles[triangle].triangles[indexSommet];
     return reponse;
 }
+
+bool Maillage::toFlip(int t, int a, int u)
+{
+    int indexAT = triangles[t].sommets.indexOf(a);
+    int b = triangles[t].sommets[(indexAT+1)%3];
+    int c = triangles[t].sommets[(indexAT+2)%3];
+    int d = triangles[u].sommets[triangles[u].indexOtherSommet(b, c)];
+
+    Matrix4f m(4,4);
+
+    m(0,0) = sommets[a].coordonnees[0];
+    m(0,1) = sommets[a].coordonnees[1];
+    m(0,2) = m(0,0)*m(0,0) + m(0,1)*m(0,1);
+    m(0,3) = 1;
+
+    m(1,0) = sommets[b].coordonnees[0];
+    m(1,1) = sommets[b].coordonnees[1];
+    m(1,2) = m(1,0)*m(1,0) + m(1,1)*m(1,1);
+    m(1,3) = 1;
+
+    m(2,0) = sommets[c].coordonnees[0];
+    m(2,1) = sommets[c].coordonnees[1];
+    m(2,2) = m(2,0)*m(2,0) + m(2,1)*m(2,1);
+    m(2,3) = 1;
+
+    m(3,0) = sommets[d].coordonnees[0];
+    m(3,1) = sommets[d].coordonnees[1];
+    m(3,2) = m(3,0)*m(3,0) + m(3,1)*m(3,1);
+    m(3,3) = 1;
+
+    float det = m.determinant();
+
+    return det > 0;
+}
+
+void Maillage::Delaunay()
+{
+    bool finish = false;
+    int i = 0;
+    while(!finish || i < triangles.size())
+    {
+        if(i==0)
+            finish = true;
+
+        for(int j = 0; j<3; j++)
+        {
+            if(i < triangles[i].triangles[j] &&
+                    triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0 &&
+                    triangles[triangles[i].triangles[j]].sommets[0] != 0 && triangles[triangles[i].triangles[j]].sommets[1] != 0 && triangles[triangles[i].triangles[j]].sommets[2] != 0)
+            {
+                if(toFlip(i, triangles[i].sommets[j], triangles[i].triangles[j]))
+                {
+                    finish = false;
+                    flipArete(i, triangles[i].sommets[j], triangles[i].triangles[j]);
+                }
+            }
+        }
+        i++;
+
+        if(i == triangles.size() && !finish)
+            i = 0;
+    }
+}

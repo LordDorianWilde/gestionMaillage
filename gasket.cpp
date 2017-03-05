@@ -6,13 +6,14 @@
 
 Gasket::Gasket()
 {
-
+    maillage = Maillage();
 }
 
 void Gasket::parseFichier(QString filename)
 {
     ParserOff p = ParserOff();
     maillage = p.parseFichier(filename);
+    maillage.Delaunay();
 }
 
 void Gasket::addPoint(float x, float y)
@@ -49,4 +50,14 @@ void Gasket::draw()
 
     glEnd();
 
+}
+
+void Gasket::clear()
+{
+    maillage = Maillage();
+}
+
+void Gasket::optimize()
+{
+    maillage.Delaunay();
 }

@@ -34,6 +34,8 @@ signals:
 public slots:
     void parse(QString filename);
     void addPoint(float x, float y);
+    void clear();
+    void optimize();
     
 };
 

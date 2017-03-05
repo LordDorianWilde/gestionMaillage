@@ -3,8 +3,12 @@
 #include <QVector>
 #include "sommet.h"
 #include "triangle.h"
+#include "Eigen/Dense"
+#include "Eigen/LU"
 
 using namespace std;
+using namespace Eigen;
+
 class Maillage
 {
 
@@ -27,6 +31,8 @@ class Maillage
         void flipArete(int indexT, int indexS, int indexU);
         void flipInfini(int sommet);
         int nextTriangleRotating(int sommet, int triangle, int sens);
+        bool toFlip(int t, int a, int u);
+        void Delaunay();
 };
 
 #endif // MAILLAGE_H

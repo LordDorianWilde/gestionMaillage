@@ -13,6 +13,8 @@ public:
     void draw();
     void parseFichier(QString filename);
     void addPoint(float x, float y);
+    void clear();
+    void optimize();
 
 private:
     Maillage maillage;
