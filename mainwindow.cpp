@@ -6,12 +6,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->buttonBrowse, &QAbstractButton::clicked, this, &browse);
-    connect(ui->buttonParse, &QAbstractButton::clicked, this, &parse);
-    connect(ui->buttonPoint, &QAbstractButton::clicked, this, &addPoint);
-    connect(ui->buttonClear, &QAbstractButton::clicked, this, &clear);
-    connect(ui->buttonOptimize, &QAbstractButton::clicked, this, &optimize);
-    connect(ui->buttonAddPoints, &QAbstractButton::clicked, this, &addRandomPoints);
+    connect(ui->buttonBrowse, &QAbstractButton::clicked, this, &MainWindow::browse);
+    connect(ui->buttonParse, &QAbstractButton::clicked, this, &MainWindow::parse);
+    connect(ui->buttonPoint, &QAbstractButton::clicked, this, &MainWindow::addPoint);
+    connect(ui->buttonClear, &QAbstractButton::clicked, this, &MainWindow::clear);
+    connect(ui->buttonOptimize, &QAbstractButton::clicked, this, &MainWindow::optimize);
+    connect(ui->buttonAddPoints, &QAbstractButton::clicked, this, &MainWindow::addRandomPoints);
     QObject::connect(this, SIGNAL(parseText(QString)), ui->widget, SLOT(parse(QString)));
     QObject::connect(this, SIGNAL(newPoint(float, float)), ui->widget, SLOT(addPoint(float,float)));
     QObject::connect(this, SIGNAL(signalclear()), ui->widget, SLOT(clear()));

@@ -22,13 +22,13 @@ Triangle* Maillage::getTriangle(int i)
 void Maillage::addSommet(Sommet s)
 {
     sommets.push_back(s);
-    sommets.last().index = sommets.length() - 1;
+    sommets.last().index = sommets.size() - 1;
 }
 
 void Maillage::addTriangle(Triangle t)
 {
     triangles.push_back(t);
-    triangles.last().index = triangles.length() - 1;
+    triangles.last().index = triangles.size() - 1;
 }
 
 int Maillage::sizeTriangles()
@@ -145,9 +145,9 @@ void Maillage::addSommetInTriangle(Sommet s, Triangle t)
 
 
     addTriangle(t1);
-    int indexMaillageT1 = triangles.length()-1;
+    int indexMaillageT1 = triangles.size()-1;
     addTriangle(t2);
-    int indexMaillageT2 = triangles.length()-1;
+    int indexMaillageT2 = triangles.size()-1;
     int indexMaillageT = t.index;
     triangles[indexMaillageT].sommets[0] = s.index;
 

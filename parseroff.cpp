@@ -1,4 +1,5 @@
 #include "parseroff.h"
+#include <QStringList>
 
 ParserOff::ParserOff()
 {
