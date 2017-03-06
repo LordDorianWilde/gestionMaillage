@@ -63,8 +63,19 @@ void GLDisplay::resizeGL(int w, int h)
 
 void GLDisplay::mousePressEvent(QMouseEvent *event)
 {
+    if (event->buttons() & Qt::RightButton) {
+        double a = event->pos().x() * 2;
+        double b = event->pos().y() * 2;
+        double w = (this->width());
+        double h = (this->height());
+        double x = ((a/w)-1) / zoom-translateX;
+        double y = -((b/h)-1) / zoom+translateY;
+        gasket.addPoint(x,y);
+        return;
+    }
     lastPos = event->pos();
     mousePressed = true;
+
 }
 
 void GLDisplay::mouseMoveEvent(QMouseEvent *event)
