@@ -33,6 +33,8 @@ class Maillage
         int nextTriangleRotating(int sommet, int triangle, int sens);
         double toFlip(int t, int a, int u);
         void Delaunay();
+        Sommet getVoronoiCenter(int s1, int s2, int s3);
+        Sommet getVoronoiCenter(int t);
 };
 
 #endif // MAILLAGE_H

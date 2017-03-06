@@ -297,7 +297,7 @@ double Maillage::toFlip(int t, int a, int u)
     int c = triangles[t].sommets[(indexAT+2)%3];
     int d = triangles[u].sommets[triangles[u].indexOtherSommet(b, c)];
 
-    Matrix4f m(4,4);
+    Matrix4d m(4,4);
 
     m(0,0) = sommets[a].coordonnees[0];
     m(0,1) = sommets[a].coordonnees[1];
@@ -353,4 +353,57 @@ void Maillage::Delaunay()
     }
 
     qDebug() << "fini !" << endl;
+}
+
+Sommet Maillage::getVoronoiCenter(int s1, int s2, int s3) {
+
+    //circumcenter coordinates found on Wolfram site : http://mathworld.wolfram.com/Circumcircle.html
+
+    double Ax = sommets[s1].coordonnees[0];
+    double Ay = sommets[s1].coordonnees[1];
+    double Bx = sommets[s2].coordonnees[0];
+    double By = sommets[s2].coordonnees[1];
+    double Cx = sommets[s3].coordonnees[0];
+    double Cy = sommets[s3].coordonnees[1];
+
+    double nA = Ax*Ax+Ay*Ay;
+    double nB = Bx*Bx+By*By;
+    double nC = Cx*Cx+Cy*Cy;
+
+    Matrix3d m(3,3);
+
+    m(0,0) = Ax;
+    m(0,1) = Ay;
+    m(0,2) = 1;
+    m(1,0) = Bx;
+    m(1,1) = By;
+    m(1,2) = 1;
+    m(2,0) = Cx;
+    m(2,1) = Cy;
+    m(2,2) = 1;
+    double a = m.determinant();
+
+    m(0,0) = nA;
+    m(1,0) = nB;
+    m(2,0) = nC;
+    double bx = -m.determinant();
+
+
+    m(0,1) = Ax;
+    m(1,1) = Bx;
+    m(2,1) = Cx;
+    double by = m.determinant();
+
+    double x0 = -bx/(2*a);
+    double y0 = -by/(2*a);
+
+    Sommet S (x0,y0, 0);
+    return S;
+}
+
+Sommet Maillage::getVoronoiCenter(int t) {
+    int s1 = triangles[t].sommets[0];
+    int s2 = triangles[t].sommets[1];
+    int s3 = triangles[t].sommets[2];
+    return this->getVoronoiCenter(s1, s2, s3);
 }
