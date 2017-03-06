@@ -26,7 +26,7 @@ Maillage ParserOff::parseFichier(QString fileName)
         QStringList coord = list[i].split(" ",QString::SkipEmptyParts);
         if(coord.size() == 3)
         {
-            processSommet(coord[0].toFloat(), coord[1].toFloat(), coord[2].toFloat());
+            processSommet(coord[0].toDouble(), coord[1].toDouble(), coord[2].toDouble());
         }
         if(coord.size() == 4)
         {
@@ -53,7 +53,7 @@ Maillage ParserOff::parseFichier(QString fileName)
     return m;
 }
 
-void ParserOff::processSommet(float a, float b, float c)
+void ParserOff::processSommet(double a, double b, double c)
 {
     Sommet s = Sommet(a, b, c);
     m.addSommet(s);

@@ -7,6 +7,7 @@
 Gasket::Gasket()
 {
     maillage = Maillage();
+    generator = default_random_engine();
 }
 
 void Gasket::parseFichier(QString filename)
@@ -16,19 +17,35 @@ void Gasket::parseFichier(QString filename)
     maillage.Delaunay();
 }
 
-void Gasket::addPoint(float x, float y)
+void Gasket::addPoint(double x, double y)
 {
     Sommet s = Sommet(x, y, 0);
     maillage.addSommetMaillage(s);
 }
 
+void Gasket::addPoint(double xmin, double xmax, double ymin, double ymax, int number)
+{
+    std::uniform_real_distribution<double> distributionX(xmin, xmax);
+    std::uniform_real_distribution<double> distributionY(ymin, ymax);
+
+    for(int i = 0; i<number; i++)
+    {
+        double x = distributionX(generator);
+        double y = distributionY(generator);
+
+        Sommet s = Sommet(x, y, 0);
+        maillage.addSommetMaillage(s);
+    }
+}
+
 void Gasket::draw()
 {
-    float x = translateX;
-    float y = translateY;
+    double x = translateX;
+    double y = translateY;
     glBegin(GL_LINES);
 
     for( int i = 0; i < maillage.sizeTriangles(); i++ ) {
+
         Sommet a = (*maillage.getSommet(maillage.getTriangle(i)->sommets[0]));
         Sommet b = (*maillage.getSommet(maillage.getTriangle(i)->sommets[1]));
         Sommet c = (*maillage.getSommet(maillage.getTriangle(i)->sommets[2]));
@@ -38,14 +55,15 @@ void Gasket::draw()
             continue;
         }
 
-        glVertex2f(a.coordonnees[0] - x, a.coordonnees[1] - y);
-        glVertex2f(b.coordonnees[0] - x, b.coordonnees[1] - y);
+        glVertex2f((a.coordonnees[0] - x)*zoom, (a.coordonnees[1] - y)*zoom);
+        glVertex2f((b.coordonnees[0] - x)*zoom, (b.coordonnees[1] - y)*zoom);
 
-        glVertex2f(b.coordonnees[0] - x, b.coordonnees[1] - y);
-        glVertex2f(c.coordonnees[0] - x, c.coordonnees[1] - y);
+        glVertex2f((b.coordonnees[0] - x)*zoom, (b.coordonnees[1] - y)*zoom);
+        glVertex2f((c.coordonnees[0] - x)*zoom, (c.coordonnees[1] - y)*zoom);
 
-        glVertex2f(c.coordonnees[0] - x, c.coordonnees[1] - y);
-        glVertex2f(a.coordonnees[0] - x, a.coordonnees[1] - y);
+        glVertex2f((c.coordonnees[0] - x)*zoom, (c.coordonnees[1] - y)*zoom);
+        glVertex2f((a.coordonnees[0] - x)*zoom, (a.coordonnees[1] - y)*zoom);
+
     }
 
     glEnd();

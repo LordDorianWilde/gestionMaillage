@@ -12,6 +12,9 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
     
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -22,13 +25,15 @@ public:
     void optimize();
     void addRandomPoints();
     ~MainWindow();
+    double zoom;
 
 signals:
     void parseText(QString);
-    void newPoint(float, float);
+    void newPoint(double, double);
     void signalclear();
     void signaloptimize();
-    void randomPoints(float, float, float, float, int);
+    void randomPoints(double, double, double, double, int);
+    void sendZoom(double);
     
 private:
     Ui::MainWindow *ui;

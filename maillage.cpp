@@ -1,4 +1,5 @@
 #include "maillage.h"
+#include <qdebug.h>
 
 Maillage::Maillage()
 {
@@ -122,16 +123,16 @@ int Maillage::sommetInTriangle(Sommet s, int i)
 
 bool Maillage::isDirect(Sommet a, Sommet b, Sommet c)
 {
-    float xab = b.coordonnees[0] - a.coordonnees[0];
-    float xac = c.coordonnees[0] - a.coordonnees[0];
-    float yab = b.coordonnees[1] - a.coordonnees[1];
-    float yac = c.coordonnees[1] - a.coordonnees[1];
+    double xab = b.coordonnees[0] - a.coordonnees[0];
+    double xac = c.coordonnees[0] - a.coordonnees[0];
+    double yab = b.coordonnees[1] - a.coordonnees[1];
+    double yac = c.coordonnees[1] - a.coordonnees[1];
 
     if(a.index == 0 || b.index == 0 || c.index == 0)
         return true;
 
-    float z = xab*yac - yab*xac;
-    return (z > 0.0);
+    double z = xab*yac - yab*xac;
+    return (z >= 0.0);
 }
 
 void Maillage::addSommetInTriangle(Sommet s, Triangle t)
@@ -241,6 +242,8 @@ void Maillage::addSommetExterieur(int s)
 
 void Maillage::flipArete(int indexT, int indexS, int indexU)
 {
+    Triangle* gdn;
+
     int sa = triangles[indexT].sommets[(triangles[indexT].sommets.indexOf(indexS)+1)%3];
     int sb = triangles[indexT].sommets[(triangles[indexT].sommets.indexOf(indexS)+2)%3];
     int st = triangles[indexT].sommets[triangles[indexT].indexOtherSommet(sa, sb)];
@@ -272,6 +275,12 @@ void Maillage::flipArete(int indexT, int indexS, int indexU)
 
     if(t_ta >= 0)
         triangles[t_ta].triangles[triangles[t_ta].triangles.indexOf(indexT)] = indexU;
+
+    if(indexT == 6021 || indexU == 6021 || t_ub == 6021 || t_ta == 6021)
+    {
+        int grd = 42;
+        gdn = &(triangles[6021]);
+    }
 }
 
 int Maillage::nextTriangleRotating(int sommet, int triangle, int sens)
@@ -281,7 +290,7 @@ int Maillage::nextTriangleRotating(int sommet, int triangle, int sens)
     return reponse;
 }
 
-bool Maillage::toFlip(int t, int a, int u)
+double Maillage::toFlip(int t, int a, int u)
 {
     int indexAT = triangles[t].sommets.indexOf(a);
     int b = triangles[t].sommets[(indexAT+1)%3];
@@ -310,9 +319,9 @@ bool Maillage::toFlip(int t, int a, int u)
     m(3,2) = m(3,0)*m(3,0) + m(3,1)*m(3,1);
     m(3,3) = 1;
 
-    float det = m.determinant();
+    double det = m.determinant();
 
-    return det > 0;
+    return det;
 }
 
 void Maillage::Delaunay()
@@ -329,8 +338,8 @@ void Maillage::Delaunay()
             if(i < triangles[i].triangles[j] &&
                     triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0 &&
                     triangles[triangles[i].triangles[j]].sommets[0] != 0 && triangles[triangles[i].triangles[j]].sommets[1] != 0 && triangles[triangles[i].triangles[j]].sommets[2] != 0)
-            {
-                if(toFlip(i, triangles[i].sommets[j], triangles[i].triangles[j]))
+            {  
+                if(toFlip(i, triangles[i].sommets[j], triangles[i].triangles[j]) > 1e-9)
                 {
                     finish = false;
                     flipArete(i, triangles[i].sommets[j], triangles[i].triangles[j]);
@@ -342,4 +351,6 @@ void Maillage::Delaunay()
         if(i == triangles.size() && !finish)
             i = 0;
     }
+
+    qDebug() << "fini !" << endl;
 }

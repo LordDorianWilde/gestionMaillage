@@ -11,10 +11,10 @@ class Sommet
     public:
         int triangle;
         int index;
-        float coordonnees[3];
+        double coordonnees[3];
         Sommet();
-        Sommet(float, float, float);
-        Sommet(float, float, float, int);
+        Sommet(double, double, double);
+        Sommet(double, double, double, int);
 };
 
 #endif // SOMMET_H

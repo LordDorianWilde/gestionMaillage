@@ -3,8 +3,9 @@
 
 #include <QGLWidget>
 #include <gasket.h>
+#include <QtConcurrent/qtconcurrentrun.h>
 #include <QMouseEvent>
-#include <random>
+
 
 class GLDisplay : public QGLWidget
 {
@@ -27,18 +28,19 @@ private:
     Gasket gasket;
     bool mousePressed;
     QPoint lastPos;
-    float translateX;
-    float translateY;
-    std::default_random_engine generator;
+    double translateX;
+    double translateY;
+    double zoom;
     
 signals:
     
 public slots:
     void parse(QString filename);
-    void addPoint(float x, float y);
+    void addPoint(double x, double y);
     void clear();
     void optimize();
-    void randomPoints(float, float, float, float, int);
+    void receiveZoom(double);
+    void randomPoints(double, double, double, double, int);
     
 };
 

@@ -1,6 +1,6 @@
 #include "sommet.h"
 
-Sommet::Sommet(float a, float b, float c)
+Sommet::Sommet(double a, double b, double c)
 {
     coordonnees[0] = a;
     coordonnees[1] = b;
@@ -17,7 +17,7 @@ Sommet::Sommet()
     triangle = -1;
 }
 
-Sommet::Sommet(float a, float b, float c, int t)
+Sommet::Sommet(double a, double b, double c, int t)
 {
     coordonnees[0] = a;
     coordonnees[1] = b;

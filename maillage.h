@@ -31,7 +31,7 @@ class Maillage
         void flipArete(int indexT, int indexS, int indexU);
         void flipInfini(int sommet);
         int nextTriangleRotating(int sommet, int triangle, int sens);
-        bool toFlip(int t, int a, int u);
+        double toFlip(int t, int a, int u);
         void Delaunay();
 };
 

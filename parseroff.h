@@ -20,7 +20,7 @@ private:
 public:
     ParserOff();
     Maillage parseFichier(QString);
-    void processSommet(float, float, float);
+    void processSommet(double, double, double);
     void processTriangle(int, int, int);
     void linkTriangles(int, int);
 };
