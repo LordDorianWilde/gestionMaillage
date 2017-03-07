@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this, SIGNAL(signalclear()), ui->widget, SLOT(clear()));
     QObject::connect(this, SIGNAL(signaloptimize()), ui->widget, SLOT(optimize()));
     QObject::connect(this, SIGNAL(randomPoints(double,double,double,double,int)), ui->widget, SLOT(randomPoints(double,double,double,double,int)));
+    QObject::connect(ui->buttonCrush, SIGNAL(clicked()), ui->widget, SLOT(crust()));
 }
 
 MainWindow::~MainWindow()

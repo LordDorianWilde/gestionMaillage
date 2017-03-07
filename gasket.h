@@ -18,6 +18,7 @@ public:
     void addPoint(double x, double y);
     void clear();
     void optimize();
+    void crust();
 
 private:
     Maillage maillage;

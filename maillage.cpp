@@ -5,6 +5,8 @@ Maillage::Maillage()
 {
     sommets = QVector<Sommet>();
     triangles = QVector<Triangle>();
+    nbVoronoiCenter = 0;
+    bord = QVector<pair<int,int>>();;
 
     Sommet infinie(0, 0, 0);
     addSommet(infinie);
@@ -406,4 +408,71 @@ Sommet Maillage::getVoronoiCenter(int t) {
     int s2 = triangles[t].sommets[1];
     int s3 = triangles[t].sommets[2];
     return this->getVoronoiCenter(s1, s2, s3);
+}
+
+void Maillage::crust() {
+    // calculer tous les centres de voronoi
+    // stocker le nombre de points de voronoi
+    // ajouter au maillage
+    // delaunay bruteforce
+    // filter les arretes : garder uniquement celles avec des points d'origines
+    // attention à pas donner deux fois la même arrete
+
+    this->Delaunay();
+
+    QVector<Sommet> temp(this->triangles.size());
+
+    int i;
+    nbVoronoiCenter = 0;
+    for (i = 0; i < triangles.size(); ++i) {
+        if (!isTriangleInfinite(i)) {
+            Sommet s = this->getVoronoiCenter(i);
+            temp[nbVoronoiCenter] = s;
+            nbVoronoiCenter++;
+        }
+    }
+    for (i = 0; i < nbVoronoiCenter; ++i) {
+        this->addSommetMaillage(temp[i]);
+    }
+    this->Delaunay();
+
+    bord.clear();
+    bord.resize(3*triangles.size());
+
+    int a, b, c, nbBords = 0;
+    int nbOriginal = sommets.size()-nbVoronoiCenter;
+    for (i = 0; i < triangles.size(); ++i) {
+        a = triangles[i].sommets[0];
+        b = triangles[i].sommets[1];
+        c = triangles[i].sommets[2];
+        if (a != 0 && b!=0 && a < nbOriginal && b < nbOriginal ) {
+            pair<int, int> p (a,b);
+            bord[nbBords] = p;
+            nbBords++;
+        }
+        if (a != 0 && c!=0 && a < nbOriginal && c < nbOriginal ) {
+            pair<int, int> p (a,c);
+            bord[nbBords] = p;
+            nbBords++;
+        }
+        if (b != 0 && c!=0 && b < nbOriginal && c < nbOriginal ) {
+            pair<int, int> p (b,c);
+            bord[nbBords] = p;
+            nbBords++;
+        }
+    }
+    bord.resize(nbBords);
+
+}
+
+bool Maillage::isTriangleInfinite(int t) {
+    return this->triangles[t].sommets[0] == 0 || this->triangles[t].sommets[1] == 0 || this->triangles[t].sommets[2] == 0;
+}
+
+int Maillage::sizeBord() {
+    return bord.size();
+}
+
+pair<int, int> *Maillage::getBord(int i) {
+    return &bord[i];
 }

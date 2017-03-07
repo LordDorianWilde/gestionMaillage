@@ -44,6 +44,8 @@ void Gasket::draw()
     double y = translateY;
     glBegin(GL_LINES);
 
+    glColor3f(0.0f, 0.0f, 0.0f);
+
     for( int i = 0; i < maillage.sizeTriangles(); i++ ) {
 
         Sommet a = (*maillage.getSommet(maillage.getTriangle(i)->sommets[0]));
@@ -66,6 +68,25 @@ void Gasket::draw()
 
     }
 
+    //draw crust in red
+    glColor3f(1.0f, 0.0f, 0.0f);
+    for( int i = 0; i < maillage.sizeBord(); i++ ) {
+        pair<int, int>* p = maillage.getBord(i);
+
+
+        Sommet a = (*maillage.getSommet(p->first));
+        Sommet b = (*maillage.getSommet(p->second));
+
+        if(a.index == 0 || b.index == 0)
+        {
+            continue;
+        }
+
+        glVertex2f((a.coordonnees[0] - x)*zoom, (a.coordonnees[1] - y)*zoom);
+        glVertex2f((b.coordonnees[0] - x)*zoom, (b.coordonnees[1] - y)*zoom);
+
+    }
+
     glEnd();
 
 }
@@ -78,4 +99,8 @@ void Gasket::clear()
 void Gasket::optimize()
 {
     maillage.Delaunay();
+}
+
+void Gasket::crust() {
+    maillage.crust();
 }
