@@ -15,14 +15,13 @@ class Maillage;
 class ParserOff
 {
 private:
-    Maillage m;
     map< QPair<int, int>, int> areteTriangle;
 public:
     ParserOff();
-    Maillage parseFichier(QString);
-    void processSommet(double, double, double);
-    void processTriangle(int, int, int);
-    void linkTriangles(int, int);
+    void parseFichier(Maillage&, QString);
+    void processSommet(Maillage&, double, double, double);
+    void processTriangle(Maillage&, int, int, int);
+    void linkTriangles(Maillage&, int, int);
 };
 
 #endif // PARSEROFF_H

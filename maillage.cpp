@@ -417,7 +417,6 @@ void Maillage::Delaunay()
         toProcess.erase(i);
     }
 
-    qDebug() << "fini !" << endl;
 }
 
 void Maillage::Delaunay(int i)
@@ -458,7 +457,6 @@ void Maillage::Delaunay(int i)
         toProcess.erase(i);
     }
 
-    qDebug() << "fini !" << endl;
 }
 
 Sommet Maillage::getVoronoiCenter(int s1, int s2, int s3) {
@@ -584,4 +582,21 @@ pair<int, int> *Maillage::getBord(int i) {
 void Maillage::setDelaunayInc(bool a)
 {
     delaunayInc = a;
+}
+
+bool Maillage::getDelaunayInc()
+{
+    return delaunayInc;
+}
+
+void Maillage::clear()
+{
+    sommets = QVector<Sommet>();
+    triangles = QVector<Triangle>();
+    indexSommet = 0;
+    indexTriangle = 0;
+    nbVoronoiCenter = 0;
+    bord = QVector<pair<int,int>>();;
+    Sommet infinie(0, 0, 0);
+    addSommet(infinie);
 }

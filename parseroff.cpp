@@ -3,11 +3,10 @@
 
 ParserOff::ParserOff()
 {
-    m = Maillage();
     areteTriangle = map< QPair<int, int>, int>();
 }
 
-Maillage ParserOff::parseFichier(QString fileName)
+void ParserOff::parseFichier(Maillage& m, QString fileName)
 {
     QFile file (fileName);
     std::cout << "file" << endl;
@@ -26,11 +25,11 @@ Maillage ParserOff::parseFichier(QString fileName)
         QStringList coord = list[i].split(" ",QString::SkipEmptyParts);
         if(coord.size() == 3)
         {
-            processSommet(coord[0].toDouble(), coord[1].toDouble(), coord[2].toDouble());
+            processSommet(m, coord[0].toDouble(), coord[1].toDouble(), coord[2].toDouble());
         }
-        if(coord.size() == 4)
+        if(coord.size() == 4 && m.getDelaunayInc() == false)
         {
-            processTriangle(coord[1].toInt() + 1, coord[2].toInt() + 1, coord[3].toInt() + 1);
+            processTriangle(m, coord[1].toInt() + 1, coord[2].toInt() + 1, coord[3].toInt() + 1);
         }
     }
 
@@ -40,7 +39,7 @@ Maillage ParserOff::parseFichier(QString fileName)
         QPair<int, int> arete = (*it).first;
         if(arete.second != 0 && arete.first != 0)
         {
-            processTriangle(0, arete.second, arete.first);
+            processTriangle(m, 0, arete.second, arete.first);
             it = areteTriangle.begin();
         }
         else
@@ -49,17 +48,18 @@ Maillage ParserOff::parseFichier(QString fileName)
         }
 
     }
-
-    return m;
 }
 
-void ParserOff::processSommet(double a, double b, double c)
+void ParserOff::processSommet(Maillage& m, double a, double b, double c)
 {
     Sommet s = Sommet(a, b, c);
-    m.addSommet(s);
+    if(m.getDelaunayInc() == false)
+        m.addSommet(s);
+    else
+        m.addSommetMaillage(s);
 }
 
-void ParserOff::processTriangle(int a, int b, int c)
+void ParserOff::processTriangle(Maillage& m, int a, int b, int c)
 {
     Triangle t = Triangle(a, b, c);
     m.addTriangle(t);
@@ -77,13 +77,12 @@ void ParserOff::processTriangle(int a, int b, int c)
         m.getSommet(c)->triangle = m.sizeTriangles()-1;
     }
 
-    linkTriangles(a, b);
-    linkTriangles(b, c);
-    linkTriangles(c, a);
-
+    linkTriangles(m, a, b);
+    linkTriangles(m, b, c);
+    linkTriangles(m, c, a);
 }
 
-void ParserOff::linkTriangles(int a, int b)
+void ParserOff::linkTriangles(Maillage& m, int a, int b)
 {
     Triangle* t = m.getTriangle(m.sizeTriangles() - 1);
     if(areteTriangle.find(QPair<int,int>(b, a)) != areteTriangle.end())

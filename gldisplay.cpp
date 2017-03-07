@@ -53,7 +53,8 @@ void GLDisplay::optimize()
 
 void GLDisplay::randomPoints(double xmin, double xmax, double ymin, double ymax, int number)
 {
-    gasket.addPoint( xmin, xmax, ymin, ymax, number);
+    QFuture<void> future = QtConcurrent::run(&gasket, &Gasket::addPoint, xmin, xmax, ymin, ymax, number);
+    //gasket.addPoint( xmin, xmax, ymin, ymax, number);
 }
 
 void GLDisplay::resizeGL(int w, int h)

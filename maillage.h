@@ -29,12 +29,14 @@ class Maillage
         pair<int,int>* getBord(int i);
         void addSommet(Sommet);
         void addTriangle(Triangle);
+        void clear();
         int sizeTriangles();
         int sizeSommets();
         void addSizeSommet(int);
         void addSizeTriangle(int);
         int sizeBord();
         void setDelaunayInc(bool);
+        bool getDelaunayInc();
         void Delaunay(int i);
         void addSommetMaillage(Sommet);
         int sommetInTriangle(Sommet, int i);

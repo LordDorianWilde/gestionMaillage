@@ -12,8 +12,8 @@ Gasket::Gasket()
 void Gasket::parseFichier(QString filename)
 {
     ParserOff p = ParserOff();
-    maillage = p.parseFichier(filename);
-    maillage.Delaunay();
+    maillage.clear();
+    p.parseFichier(maillage, filename);
 }
 
 void Gasket::addPoint(double x, double y)
@@ -24,6 +24,7 @@ void Gasket::addPoint(double x, double y)
 
 void Gasket::addPoint(double xmin, double xmax, double ymin, double ymax, int number)
 {
+    maillage.clear();
     std::uniform_real_distribution<double> distributionX(xmin, xmax);
     std::uniform_real_distribution<double> distributionY(ymin, ymax);
     maillage.addSizeSommet(number);
@@ -49,23 +50,33 @@ void Gasket::draw()
 
     for( int i = 0; i < maillage.sizeTriangles(); i++ ) {
 
-        Sommet a = (*maillage.getSommet(maillage.getTriangle(i)->sommets[0]));
-        Sommet b = (*maillage.getSommet(maillage.getTriangle(i)->sommets[1]));
-        Sommet c = (*maillage.getSommet(maillage.getTriangle(i)->sommets[2]));
+        QVector<int> aux = maillage.getTriangle(i)->sommets;
+        int aa = aux[0];
+        int bb = aux[1];
+        int cc = aux[2];
+        int a = (*maillage.getSommet(aa)).index;
+        double a1 = (*maillage.getSommet(aa)).coordonnees[0];
+        double a2 = (*maillage.getSommet(aa)).coordonnees[1];
+        int b = (*maillage.getSommet(bb)).index;
+        double b1 = (*maillage.getSommet(bb)).coordonnees[0];
+        double b2 = (*maillage.getSommet(bb)).coordonnees[1];
+        int c = (*maillage.getSommet(cc)).index;
+        double c1 = (*maillage.getSommet(cc)).coordonnees[0];
+        double c2 = (*maillage.getSommet(cc)).coordonnees[1];
 
-        if(a.index == 0 || b.index == 0 || c.index == 0)
+        if(a == 0 || b == 0 || c == 0)
         {
             continue;
         }
 
-        glVertex2f((a.coordonnees[0] - x)*zoom, (a.coordonnees[1] - y)*zoom);
-        glVertex2f((b.coordonnees[0] - x)*zoom, (b.coordonnees[1] - y)*zoom);
+        glVertex2f((a1 - x)*zoom, (a2 - y)*zoom);
+        glVertex2f((b1 - x)*zoom, (b2 - y)*zoom);
 
-        glVertex2f((b.coordonnees[0] - x)*zoom, (b.coordonnees[1] - y)*zoom);
-        glVertex2f((c.coordonnees[0] - x)*zoom, (c.coordonnees[1] - y)*zoom);
+        glVertex2f((b1 - x)*zoom, (b2 - y)*zoom);
+        glVertex2f((c1 - x)*zoom, (c2 - y)*zoom);
 
-        glVertex2f((c.coordonnees[0] - x)*zoom, (c.coordonnees[1] - y)*zoom);
-        glVertex2f((a.coordonnees[0] - x)*zoom, (a.coordonnees[1] - y)*zoom);
+        glVertex2f((c1 - x)*zoom, (c2 - y)*zoom);
+        glVertex2f((a1 - x)*zoom, (a2 - y)*zoom);
 
     }
 
@@ -94,7 +105,7 @@ void Gasket::draw()
 
 void Gasket::clear()
 {
-    maillage = Maillage();
+    maillage.clear();
 }
 
 void Gasket::optimize()
@@ -102,7 +113,8 @@ void Gasket::optimize()
     maillage.Delaunay();
 }
 
-void Gasket::crust() {
+void Gasket::crust()
+{
     maillage.crust();
 }
 
