@@ -15,6 +15,8 @@ class Maillage
     private:
         QVector<Sommet> sommets;
         QVector<Triangle> triangles;
+        int indexSommet;
+        int indexTriangle;
 
     public:
         Maillage();
@@ -23,6 +25,9 @@ class Maillage
         void addSommet(Sommet);
         void addTriangle(Triangle);
         int sizeTriangles();
+        int sizeSommets();
+        void addSizeSommet(int);
+        void addSizeTriangle(int);
         void addSommetMaillage(Sommet);
         int sommetInTriangle(Sommet, int i);
         bool isDirect(Sommet, Sommet, Sommet);

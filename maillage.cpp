@@ -5,6 +5,8 @@ Maillage::Maillage()
 {
     sommets = QVector<Sommet>();
     triangles = QVector<Triangle>();
+    indexSommet = 0;
+    indexTriangle = 0;
 
     Sommet infinie(0, 0, 0);
     addSommet(infinie);
@@ -22,14 +24,34 @@ Triangle* Maillage::getTriangle(int i)
 
 void Maillage::addSommet(Sommet s)
 {
-    sommets.push_back(s);
-    sommets.last().index = sommets.size() - 1;
+    if(indexSommet < sommets.size())
+    {
+        sommets[indexSommet] = s;
+        sommets[indexSommet].index = indexSommet;
+        indexSommet++;
+    }
+    else
+    {
+        sommets.push_back(s);
+        sommets.last().index = indexSommet;
+        indexSommet++;
+    }
 }
 
 void Maillage::addTriangle(Triangle t)
 {
-    triangles.push_back(t);
-    triangles.last().index = triangles.size() - 1;
+    if(indexTriangle < triangles.size())
+    {
+        triangles[indexTriangle] = t;
+        triangles[indexTriangle].index = indexTriangle;
+        indexTriangle++;
+    }
+    else
+    {
+        triangles.push_back(t);
+        triangles.last().index = indexTriangle;
+        indexTriangle++;
+    }
 }
 
 int Maillage::sizeTriangles()
@@ -37,12 +59,29 @@ int Maillage::sizeTriangles()
     return triangles.size();
 }
 
+int Maillage::sizeSommets()
+{
+    return sommets.size();
+}
+
+void Maillage::addSizeSommet(int s)
+{
+    indexSommet = sommets.size();
+    sommets.resize(indexSommet + s);
+}
+
+void Maillage::addSizeTriangle(int s)
+{
+    indexTriangle = triangles.size();
+    triangles.resize(indexTriangle + s);
+}
+
 void Maillage::addSommetMaillage(Sommet s)
 {
     addSommet(s);
-    s = sommets.last();
+    s = sommets[indexSommet-1];
 
-    if(sommets.size() > 4)
+    if(indexSommet > 4)
     {
         int i = 0 ;
         while(i != -1 && i != sommetInTriangle(s, i))
@@ -62,7 +101,7 @@ void Maillage::addSommetMaillage(Sommet s)
             addSommetExterieur(s.index);
         }
     }
-    else if(sommets.size() == 4)
+    else if(indexSommet == 4)
     {
         if(isDirect(sommets[1],sommets[2],sommets[3]))
         {
@@ -146,9 +185,9 @@ void Maillage::addSommetInTriangle(Sommet s, Triangle t)
 
 
     addTriangle(t1);
-    int indexMaillageT1 = triangles.size()-1;
+    int indexMaillageT1 = indexTriangle-1;
     addTriangle(t2);
-    int indexMaillageT2 = triangles.size()-1;
+    int indexMaillageT2 = indexTriangle-1;
     int indexMaillageT = t.index;
     triangles[indexMaillageT].sommets[0] = s.index;
 
@@ -339,7 +378,7 @@ void Maillage::Delaunay()
                     triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0 &&
                     triangles[triangles[i].triangles[j]].sommets[0] != 0 && triangles[triangles[i].triangles[j]].sommets[1] != 0 && triangles[triangles[i].triangles[j]].sommets[2] != 0)
             {  
-                if(toFlip(i, triangles[i].sommets[j], triangles[i].triangles[j]) > 1e-9)
+                if(toFlip(i, triangles[i].sommets[j], triangles[i].triangles[j]) > 1e-13)
                 {
                     finish = false;
                     flipArete(i, triangles[i].sommets[j], triangles[i].triangles[j]);

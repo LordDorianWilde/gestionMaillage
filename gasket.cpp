@@ -27,6 +27,8 @@ void Gasket::addPoint(double xmin, double xmax, double ymin, double ymax, int nu
 {
     std::uniform_real_distribution<double> distributionX(xmin, xmax);
     std::uniform_real_distribution<double> distributionY(ymin, ymax);
+    maillage.addSizeSommet(number);
+    maillage.addSizeTriangle(2*number);
 
     for(int i = 0; i<number; i++)
     {
