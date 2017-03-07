@@ -1,5 +1,6 @@
 #include "maillage.h"
 #include <qdebug.h>
+#include <ctime>
 
 Maillage::Maillage()
 {
@@ -12,6 +13,11 @@ Maillage::Maillage()
     bord = QVector<pair<int,int>>();;
     Sommet infinie(0, 0, 0);
     addSommet(infinie);
+    time1 = 0;
+    time2 = 0;
+    time3 = 0;
+    time4 = 0;
+    time5 = 0;
 }
 
 Sommet *Maillage::getSommet(int i)
@@ -80,15 +86,19 @@ void Maillage::addSizeTriangle(int s)
 
 void Maillage::addSommetMaillage(Sommet s)
 {
+    int now = clock();
+
     addSommet(s);
     s = sommets[indexSommet-1];
 
     if(indexSommet > 4)
     {
         int i = 0 ;
-        while(i != -1 && i != sommetInTriangle(s, i))
+        int next = sommetInTriangle(s, i);
+        while(i != next)
         {
-            i = sommetInTriangle(s, i);
+            i = next;
+            next = sommetInTriangle(s, i);
         }
 
         sommets[indexSommet-1].triangle = i;
@@ -103,7 +113,8 @@ void Maillage::addSommetMaillage(Sommet s)
             addSommetInTriangle(s, t);
             addSommetExterieur(s.index);
         }
-        Delaunay(indexSommet - 1);
+        if(delaunayInc)
+            Delaunay(indexSommet - 1);
     }
     else if(indexSommet == 4)
     {
@@ -136,52 +147,70 @@ void Maillage::addSommetMaillage(Sommet s)
             addTriangle(t3);
         }
     }
+    int now1 = clock();
+    time1 += now1 - now;
 }
 
 int Maillage::sommetInTriangle(Sommet s, int i)
 {
+    int now = clock();
+
     Triangle t = triangles[i];
     Sommet a = sommets[t.sommets[0]];
     Sommet b = sommets[t.sommets[1]];
     Sommet c = sommets[t.sommets[2]];
 
-    if(isDirect(s, a, b) && isDirect(s, b, c) && isDirect(s, c, a))
+    if(!isDirect(s, a, b))
     {
-        return i;
+        int now1 = clock();
+        time2 += now1 - now;
+        return t.triangles[2];
+    }
+    else if(!isDirect(s, b, c))
+    {
+        int now1 = clock();
+        time2 += now1 - now;
+        return t.triangles[0];
+    }
+    else if(!isDirect(s, c, a))
+    {
+        int now1 = clock();
+        time2 += now1 - now;
+        return t.triangles[1];
     }
     else
     {
-        if(!isDirect(s, a, b))
-        {
-            return t.triangles[2];
-        }
-        else if(!isDirect(s, b, c))
-        {
-            return t.triangles[0];
-        }
-        else
-        {
-            return t.triangles[1];
-        }
+        int now1 = clock();
+        time2 += now1 - now;
+        return i;
     }
+
+
 }
 
 bool Maillage::isDirect(Sommet a, Sommet b, Sommet c)
 {
+    int now = clock();
+
+    if(a.index == 0 || b.index == 0 || c.index == 0)
+        return true;
+
     double xab = b.coordonnees[0] - a.coordonnees[0];
     double xac = c.coordonnees[0] - a.coordonnees[0];
     double yab = b.coordonnees[1] - a.coordonnees[1];
     double yac = c.coordonnees[1] - a.coordonnees[1];
 
-    if(a.index == 0 || b.index == 0 || c.index == 0)
-        return true;
-
     double z = xab*yac - yab*xac;
+    int now1 = clock();
+    time5 += now1 - now;
+
     return (z >= 0.0);
 }
 
 void Maillage::addSommetInTriangle(Sommet s, Triangle t)
 {
+    int now = clock();
+
     Sommet a = sommets[t.sommets[0]];
     Sommet b = sommets[t.sommets[1]];
     Sommet c = sommets[t.sommets[2]];
@@ -235,10 +264,15 @@ void Maillage::addSommetInTriangle(Sommet s, Triangle t)
     triangles[indexMaillageT].triangles[2] = indexMaillageT2;
 
     sommets[s.index].triangle = indexMaillageT;
+
+    int now1 = clock();
+    time3 += now1 - now;
 }
 
 void Maillage::addSommetExterieur(int s)
 {
+    int now = clock();
+
     Triangle t = triangles[sommets[s].triangle];
 
     while(t.sommets[0] == 0 || t.sommets[1] ==0 || t.sommets[2] == 0)
@@ -283,12 +317,13 @@ void Maillage::addSommetExterieur(int s)
             t2 = nextTriangleRotating(0, t1, -1);
         }
     }
+
+    int now1 = clock();
+    time4 += now1 - now;
 }
 
 void Maillage::flipArete(int indexT, int indexS, int indexU)
 {
-    Triangle* gdn;
-
     int sa = triangles[indexT].sommets[(triangles[indexT].sommets.indexOf(indexS)+1)%3];
     int sb = triangles[indexT].sommets[(triangles[indexT].sommets.indexOf(indexS)+2)%3];
     int st = triangles[indexT].sommets[triangles[indexT].indexOtherSommet(sa, sb)];

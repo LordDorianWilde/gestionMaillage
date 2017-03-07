@@ -3,6 +3,7 @@
 #include "parseroff.h"
 #include <QPoint>
 #include <random>
+#include <qdebug.h>
 
 
 class Gasket

@@ -38,6 +38,12 @@ void Gasket::addPoint(double xmin, double xmax, double ymin, double ymax, int nu
         Sommet s = Sommet(x, y, 0);
         maillage.addSommetMaillage(s);
     }
+
+    qDebug() << "time 1 : " << maillage.time1;
+    qDebug() << "time 2 : " << maillage.time2;
+    qDebug() << "time 3 : " << maillage.time3;
+    qDebug() << "time 4 : " << maillage.time4;
+    qDebug() << "time 5 : " << maillage.time5 << endl;
 }
 
 void Gasket::draw()
