@@ -50,12 +50,6 @@ class Maillage
         Sommet getVoronoiCenter(int t);
         void crust();
         bool isTriangleInfinite(int t);
-        double time1;
-        double time2;
-        double time3;
-        double time4;
-        double time5;
-
 };
 
 #endif // MAILLAGE_H

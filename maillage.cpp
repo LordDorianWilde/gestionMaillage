@@ -1,5 +1,4 @@
 #include "maillage.h"
-#include <qdebug.h>
 #include <ctime>
 
 Maillage::Maillage()
@@ -13,11 +12,6 @@ Maillage::Maillage()
     bord = QVector<pair<int,int>>();;
     Sommet infinie(0, 0, 0);
     addSommet(infinie);
-    time1 = 0;
-    time2 = 0;
-    time3 = 0;
-    time4 = 0;
-    time5 = 0;
 }
 
 Sommet *Maillage::getSommet(int i)
@@ -86,8 +80,6 @@ void Maillage::addSizeTriangle(int s)
 
 void Maillage::addSommetMaillage(Sommet s)
 {
-    int now = clock();
-
     addSommet(s);
     s = sommets[indexSommet-1];
 
@@ -147,14 +139,10 @@ void Maillage::addSommetMaillage(Sommet s)
             addTriangle(t3);
         }
     }
-    int now1 = clock();
-    time1 += now1 - now;
 }
 
 int Maillage::sommetInTriangle(Sommet s, int i)
 {
-    int now = clock();
-
     Triangle t = triangles[i];
     Sommet a = sommets[t.sommets[0]];
     Sommet b = sommets[t.sommets[1]];
@@ -162,36 +150,24 @@ int Maillage::sommetInTriangle(Sommet s, int i)
 
     if(!isDirect(s, a, b))
     {
-        int now1 = clock();
-        time2 += now1 - now;
         return t.triangles[2];
     }
     else if(!isDirect(s, b, c))
     {
-        int now1 = clock();
-        time2 += now1 - now;
         return t.triangles[0];
     }
     else if(!isDirect(s, c, a))
     {
-        int now1 = clock();
-        time2 += now1 - now;
         return t.triangles[1];
     }
     else
     {
-        int now1 = clock();
-        time2 += now1 - now;
         return i;
     }
-
-
 }
 
 bool Maillage::isDirect(Sommet a, Sommet b, Sommet c)
 {
-    int now = clock();
-
     if(a.index == 0 || b.index == 0 || c.index == 0)
         return true;
 
@@ -201,16 +177,11 @@ bool Maillage::isDirect(Sommet a, Sommet b, Sommet c)
     double yac = c.coordonnees[1] - a.coordonnees[1];
 
     double z = xab*yac - yab*xac;
-    int now1 = clock();
-    time5 += now1 - now;
-
     return (z >= 0.0);
 }
 
 void Maillage::addSommetInTriangle(Sommet s, Triangle t)
 {
-    int now = clock();
-
     Sommet a = sommets[t.sommets[0]];
     Sommet b = sommets[t.sommets[1]];
     Sommet c = sommets[t.sommets[2]];
@@ -264,15 +235,10 @@ void Maillage::addSommetInTriangle(Sommet s, Triangle t)
     triangles[indexMaillageT].triangles[2] = indexMaillageT2;
 
     sommets[s.index].triangle = indexMaillageT;
-
-    int now1 = clock();
-    time3 += now1 - now;
 }
 
 void Maillage::addSommetExterieur(int s)
 {
-    int now = clock();
-
     Triangle t = triangles[sommets[s].triangle];
 
     while(t.sommets[0] == 0 || t.sommets[1] ==0 || t.sommets[2] == 0)
@@ -317,9 +283,6 @@ void Maillage::addSommetExterieur(int s)
             t2 = nextTriangleRotating(0, t1, -1);
         }
     }
-
-    int now1 = clock();
-    time4 += now1 - now;
 }
 
 void Maillage::flipArete(int indexT, int indexS, int indexU)

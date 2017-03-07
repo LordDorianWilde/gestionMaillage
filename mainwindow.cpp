@@ -84,7 +84,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         zoom /= 1.5;
     }
     emit sendZoom(zoom);
-    qDebug() << event->key() << " zoom : " << zoom;
 }
 
 void MainWindow::delaunayInc()

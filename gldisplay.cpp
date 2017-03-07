@@ -49,7 +49,6 @@ void GLDisplay::clear()
 void GLDisplay::optimize()
 {
     QFuture<void> future = QtConcurrent::run(&gasket, &Gasket::optimize);
-    //gasket.optimize();
 }
 
 void GLDisplay::randomPoints(double xmin, double xmax, double ymin, double ymax, int number)
@@ -104,7 +103,6 @@ void GLDisplay::mouseReleaseEvent(QMouseEvent *event)
 void GLDisplay::receiveZoom(double z)
 {
     zoom = z;
-    qDebug() <<" gld zoom : " << zoom;
 }
 
 void GLDisplay::crust() {
