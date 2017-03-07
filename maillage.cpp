@@ -416,7 +416,6 @@ void Maillage::Delaunay()
         }
         toProcess.erase(i);
     }
-
 }
 
 void Maillage::Delaunay(int i)
@@ -456,7 +455,6 @@ void Maillage::Delaunay(int i)
         }
         toProcess.erase(i);
     }
-
 }
 
 Sommet Maillage::getVoronoiCenter(int s1, int s2, int s3) {
