@@ -17,17 +17,21 @@ class Maillage
         QVector<Triangle> triangles;
         int indexSommet;
         int indexTriangle;
+        QVector<pair<int,int>> bord;
+        int nbVoronoiCenter;
 
     public:
         Maillage();
         Sommet* getSommet(int);
         Triangle* getTriangle(int);
+        pair<int,int>* getBord(int i);
         void addSommet(Sommet);
         void addTriangle(Triangle);
         int sizeTriangles();
         int sizeSommets();
         void addSizeSommet(int);
         void addSizeTriangle(int);
+        int sizeBord();
         void addSommetMaillage(Sommet);
         int sommetInTriangle(Sommet, int i);
         bool isDirect(Sommet, Sommet, Sommet);
@@ -40,6 +44,8 @@ class Maillage
         void Delaunay();
         Sommet getVoronoiCenter(int s1, int s2, int s3);
         Sommet getVoronoiCenter(int t);
+        void crust();
+        bool isTriangleInfinite(int t);
 };
 
 #endif // MAILLAGE_H

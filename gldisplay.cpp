@@ -105,3 +105,7 @@ void GLDisplay::receiveZoom(double z)
     zoom = z;
     qDebug() <<" gld zoom : " << zoom;
 }
+
+void GLDisplay::crust() {
+    this->gasket.crust();
+}

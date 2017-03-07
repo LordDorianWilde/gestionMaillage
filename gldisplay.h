@@ -41,6 +41,7 @@ public slots:
     void optimize();
     void receiveZoom(double);
     void randomPoints(double, double, double, double, int);
+    void crust();
     
 };
 
