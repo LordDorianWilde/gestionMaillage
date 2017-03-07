@@ -106,3 +106,8 @@ void Gasket::optimize()
 void Gasket::crust() {
     maillage.crust();
 }
+
+void Gasket::incDelaunay(bool a)
+{
+    maillage.setDelaunayInc(a);
+}

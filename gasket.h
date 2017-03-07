@@ -19,6 +19,7 @@ public:
     void clear();
     void optimize();
     void crust();
+    void incDelaunay(bool);
 
 private:
     Maillage maillage;

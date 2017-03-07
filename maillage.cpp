@@ -8,6 +8,7 @@ Maillage::Maillage()
     indexSommet = 0;
     indexTriangle = 0;
     nbVoronoiCenter = 0;
+    delaunayInc = false;
     bord = QVector<pair<int,int>>();;
     Sommet infinie(0, 0, 0);
     addSommet(infinie);
@@ -74,7 +75,7 @@ void Maillage::addSizeSommet(int s)
 void Maillage::addSizeTriangle(int s)
 {
     indexTriangle = triangles.size();
-    triangles.resize(indexTriangle + s);
+    triangles.resize(indexTriangle - 2 + s);
 }
 
 void Maillage::addSommetMaillage(Sommet s)
@@ -90,6 +91,7 @@ void Maillage::addSommetMaillage(Sommet s)
             i = sommetInTriangle(s, i);
         }
 
+        sommets[indexSommet-1].triangle = i;
         if(triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0)
         {
             Triangle t = triangles[i];
@@ -101,6 +103,7 @@ void Maillage::addSommetMaillage(Sommet s)
             addSommetInTriangle(s, t);
             addSommetExterieur(s.index);
         }
+        Delaunay(indexSommet - 1);
     }
     else if(indexSommet == 4)
     {
@@ -110,6 +113,9 @@ void Maillage::addSommetMaillage(Sommet s)
             Triangle t1 = Triangle(0,2,1,0,3,2);
             Triangle t2 = Triangle(0,3,2,0,1,3);
             Triangle t3 = Triangle(0,1,3,0,2,1);
+            sommets[1].triangle = 0;
+            sommets[2].triangle = 0;
+            sommets[3].triangle = 0;
             addTriangle(t);
             addTriangle(t1);
             addTriangle(t2);
@@ -121,6 +127,9 @@ void Maillage::addSommetMaillage(Sommet s)
             Triangle t1 = Triangle(0,1,2,0,2,3);
             Triangle t2 = Triangle(0,2,3,0,3,1);
             Triangle t3 = Triangle(0,3,1,0,1,2);
+            sommets[1].triangle = 0;
+            sommets[2].triangle = 0;
+            sommets[3].triangle = 0;
             addTriangle(t);
             addTriangle(t1);
             addTriangle(t2);
@@ -135,10 +144,6 @@ int Maillage::sommetInTriangle(Sommet s, int i)
     Sommet a = sommets[t.sommets[0]];
     Sommet b = sommets[t.sommets[1]];
     Sommet c = sommets[t.sommets[2]];
-
-    bool g = isDirect(s, a, b);
-    bool f = isDirect(s, b, c);
-    bool h = isDirect(s, c, a);
 
     if(isDirect(s, a, b) && isDirect(s, b, c) && isDirect(s, c, a))
     {
@@ -315,12 +320,6 @@ void Maillage::flipArete(int indexT, int indexS, int indexU)
 
     if(t_ta >= 0)
         triangles[t_ta].triangles[triangles[t_ta].triangles.indexOf(indexT)] = indexU;
-
-    if(indexT == 6021 || indexU == 6021 || t_ub == 6021 || t_ta == 6021)
-    {
-        int grd = 42;
-        gdn = &(triangles[6021]);
-    }
 }
 
 int Maillage::nextTriangleRotating(int sommet, int triangle, int sens)
@@ -366,13 +365,9 @@ double Maillage::toFlip(int t, int a, int u)
 
 void Maillage::Delaunay()
 {
-    bool finish = false;
-    int i = 0;
-    while(!finish || i < triangles.size())
+    set<int> toProcess = set<int>();
+    for(int i = 0; i < triangles.size(); i++)
     {
-        if(i==0)
-            finish = true;
-
         for(int j = 0; j<3; j++)
         {
             if(i < triangles[i].triangles[j] &&
@@ -381,15 +376,88 @@ void Maillage::Delaunay()
             {  
                 if(toFlip(i, triangles[i].sommets[j], triangles[i].triangles[j]) > 1e-13)
                 {
-                    finish = false;
                     flipArete(i, triangles[i].sommets[j], triangles[i].triangles[j]);
+
+                    for(int k = 0; k<3; k++)
+                    {
+                        toProcess.insert(triangles[i].triangles[k]);
+                    }
+
+                    for(int k = 0; k<3; k++)
+                    {
+                        toProcess.insert(triangles[triangles[i].triangles[j]].triangles[k]);
+                    }
                 }
             }
         }
-        i++;
+    }
 
-        if(i == triangles.size() && !finish)
-            i = 0;
+    while(!toProcess.empty())
+    {
+        int i = *(toProcess.begin());
+        for(int j = 0; j<3; j++)
+        {
+            if(triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0 &&
+                    triangles[triangles[i].triangles[j]].sommets[0] != 0 && triangles[triangles[i].triangles[j]].sommets[1] != 0 && triangles[triangles[i].triangles[j]].sommets[2] != 0)
+            {
+                if(toFlip(i, triangles[i].sommets[j], triangles[i].triangles[j]) > 1e-13)
+                {
+                    flipArete(i, triangles[i].sommets[j], triangles[i].triangles[j]);
+
+                    for(int k = 0; k<3; k++)
+                    {
+                        toProcess.insert(triangles[i].triangles[k]);
+                    }
+
+                    for(int k = 0; k<3; k++)
+                    {
+                        toProcess.insert(triangles[triangles[i].triangles[j]].triangles[k]);
+                    }
+                }
+            }
+        }
+        toProcess.erase(i);
+    }
+
+    qDebug() << "fini !" << endl;
+}
+
+void Maillage::Delaunay(int i)
+{
+    int t = sommets[i].triangle;
+    set<int> toProcess = set<int>({t});
+
+    while(toProcess.find(nextTriangleRotating(i,t,1)) == toProcess.end())
+    {
+        t = nextTriangleRotating(i,t,1);
+        toProcess.insert(t);
+    }
+
+    while(!toProcess.empty())
+    {
+        int i = *(toProcess.begin());
+        for(int j = 0; j<3; j++)
+        {
+            if(triangles[i].sommets[0] != 0 && triangles[i].sommets[1] != 0 && triangles[i].sommets[2] != 0 &&
+                    triangles[triangles[i].triangles[j]].sommets[0] != 0 && triangles[triangles[i].triangles[j]].sommets[1] != 0 && triangles[triangles[i].triangles[j]].sommets[2] != 0)
+            {
+                if(toFlip(i, triangles[i].sommets[j], triangles[i].triangles[j]) > 1e-13)
+                {
+                    flipArete(i, triangles[i].sommets[j], triangles[i].triangles[j]);
+
+                    for(int k = 0; k<3; k++)
+                    {
+                        toProcess.insert(triangles[i].triangles[k]);
+                    }
+
+                    for(int k = 0; k<3; k++)
+                    {
+                        toProcess.insert(triangles[triangles[i].triangles[j]].triangles[k]);
+                    }
+                }
+            }
+        }
+        toProcess.erase(i);
     }
 
     qDebug() << "fini !" << endl;
@@ -513,4 +581,9 @@ int Maillage::sizeBord() {
 
 pair<int, int> *Maillage::getBord(int i) {
     return &bord[i];
+}
+
+void Maillage::setDelaunayInc(bool a)
+{
+    delaunayInc = a;
 }

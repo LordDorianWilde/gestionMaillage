@@ -32,6 +32,7 @@ void GLDisplay::paintGL()
 
 void GLDisplay::parse(QString filename)
 {
+    gasket.clear();
     gasket.parseFichier(filename);
 }
 
@@ -108,4 +109,9 @@ void GLDisplay::receiveZoom(double z)
 
 void GLDisplay::crust() {
     this->gasket.crust();
+}
+
+void GLDisplay::incDelaunay(bool a)
+{
+    gasket.incDelaunay(a);
 }

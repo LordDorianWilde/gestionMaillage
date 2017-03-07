@@ -23,6 +23,7 @@ public:
     void addPoint();
     void clear();
     void optimize();
+    void delaunayInc();
     void addRandomPoints();
     ~MainWindow();
     double zoom;
@@ -34,6 +35,7 @@ signals:
     void signaloptimize();
     void randomPoints(double, double, double, double, int);
     void sendZoom(double);
+    void delaunay(bool);
     
 private:
     Ui::MainWindow *ui;

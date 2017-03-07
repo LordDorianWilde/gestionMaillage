@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->buttonPoint, &QAbstractButton::clicked, this, &MainWindow::addPoint);
     connect(ui->buttonClear, &QAbstractButton::clicked, this, &MainWindow::clear);
     connect(ui->buttonOptimize, &QAbstractButton::clicked, this, &MainWindow::optimize);
+    connect(ui->checkDelaunay, &QAbstractButton::clicked, this, &MainWindow::delaunayInc);
     connect(ui->buttonAddPoints, &QAbstractButton::clicked, this, &MainWindow::addRandomPoints);
     QObject::connect(this, SIGNAL(parseText(QString)), ui->widget, SLOT(parse(QString)));
     QObject::connect(this, SIGNAL(sendZoom(double)), ui->widget, SLOT(receiveZoom(double)));
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(this, SIGNAL(signaloptimize()), ui->widget, SLOT(optimize()));
     QObject::connect(this, SIGNAL(randomPoints(double,double,double,double,int)), ui->widget, SLOT(randomPoints(double,double,double,double,int)));
     QObject::connect(ui->buttonCrush, SIGNAL(clicked()), ui->widget, SLOT(crust()));
+    QObject::connect(this, SIGNAL(delaunay(bool)), ui->widget, SLOT(incDelaunay(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -83,4 +85,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     }
     emit sendZoom(zoom);
     qDebug() << event->key() << " zoom : " << zoom;
+}
+
+void MainWindow::delaunayInc()
+{
+    emit delaunay(ui->checkDelaunay->checkState() == Qt::Checked);
 }

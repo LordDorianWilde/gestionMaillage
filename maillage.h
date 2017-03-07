@@ -5,6 +5,7 @@
 #include "triangle.h"
 #include "Eigen/Dense"
 #include "Eigen/LU"
+#include <set>
 
 using namespace std;
 using namespace Eigen;
@@ -17,6 +18,7 @@ class Maillage
         QVector<Triangle> triangles;
         int indexSommet;
         int indexTriangle;
+        bool delaunayInc;
         QVector<pair<int,int>> bord;
         int nbVoronoiCenter;
 
@@ -32,6 +34,8 @@ class Maillage
         void addSizeSommet(int);
         void addSizeTriangle(int);
         int sizeBord();
+        void setDelaunayInc(bool);
+        void Delaunay(int i);
         void addSommetMaillage(Sommet);
         int sommetInTriangle(Sommet, int i);
         bool isDirect(Sommet, Sommet, Sommet);
@@ -46,6 +50,7 @@ class Maillage
         Sommet getVoronoiCenter(int t);
         void crust();
         bool isTriangleInfinite(int t);
+
 };
 
 #endif // MAILLAGE_H

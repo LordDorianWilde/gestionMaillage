@@ -42,6 +42,7 @@ public slots:
     void receiveZoom(double);
     void randomPoints(double, double, double, double, int);
     void crust();
+    void incDelaunay(bool);
     
 };
 
